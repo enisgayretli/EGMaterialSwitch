@@ -12,73 +12,75 @@ import QuartzCore
 
 
 public enum EGMaterialSwitchStyle {
-    case Default
-    case Light
-    case Dark
+    case `default`
+    case light
+    case dark
 }
 
 public enum EGMaterialSwitchState{
-    case On
-    case Off
+    case on
+    case off
 }
 public enum EGMaterialSwitchSize{
-    case Small
-    case Normal
-    case Big
+    case small
+    case normal
+    case big
 }
 
 protocol EGMaterialSwitchDelegate {
-    func switchStateChanged(currentState:EGMaterialSwitchState)
+    func switchStateChanged(_ currentState:EGMaterialSwitchState)
 }
 
 
-public class EGMaterialSwitch: UIControl {
-
-    private var trackThickness: Float!
-    private var thumbSize:Float!
-    private var thumbOnPosition:Float!
-    private var thumbOffPosition:Float!
-    private var bounceOffset:Float!
-    private var thumbStyle:EGMaterialSwitchStyle!
-    private var rippleLayer:CAShapeLayer!
+open class EGMaterialSwitch: UIControl {
+    
+    fileprivate var trackThickness: Float!
+    fileprivate var thumbSize:Float!
+    fileprivate var thumbOnPosition:Float!
+    fileprivate var thumbOffPosition:Float!
+    fileprivate var bounceOffset:Float!
+    fileprivate var thumbStyle:EGMaterialSwitchStyle!
+    fileprivate var rippleLayer:CAShapeLayer!
     var delegate:EGMaterialSwitchDelegate!
-    var isOn:Bool!
-    var isEnabled:Bool!
-    var isBounceEnabled:Bool!
-    var isRippleEnabled:Bool!
-    var thumbOnTintColor:UIColor!
-    var thumbOffTintColor:UIColor!
-    var trackOnTintColor:UIColor!
-    var trackOffTintColor:UIColor!
-    var thumbDisabledTintColor:UIColor!
-    var trackDisabledTintColor:UIColor!
-    var rippleFillColor:UIColor!
-    var switchThumb:UIButton!
-    var track:UIView!
+    var isOn:Bool = false
+    //    open var isEnabled:Bool!
+    var isBounceEnabled:Bool = true
+    var isRippleEnabled:Bool = true
+    var thumbOnTintColor:UIColor? = nil
+    var thumbOffTintColor:UIColor? = nil
+    var trackOnTintColor:UIColor? = nil
+    var trackOffTintColor:UIColor? = nil
+    var thumbDisabledTintColor:UIColor? = nil
+    var trackDisabledTintColor:UIColor? = nil
+    var rippleFillColor:UIColor? = nil
+    var switchThumb:UIButton? = nil
+    var track:UIView? = nil
     
     
     
-    override public var enabled:Bool{
+    
+    
+    override open var isEnabled:Bool{
         didSet{
-            UIView.animateWithDuration(0.1) { () -> Void in
-                if (self.enabled == true) {
+            UIView.animate(withDuration: 0.1, animations: { () -> Void in
+                if (self.isEnabled == true) {
                     if (self.isOn == true) {
-                        self.switchThumb.backgroundColor = self.thumbOnTintColor
-                        self.track.backgroundColor = self.trackOnTintColor
+                        self.switchThumb?.backgroundColor = self.thumbOnTintColor
+                        self.track?.backgroundColor = self.trackOnTintColor
                     }
                     else {
-                        self.switchThumb.backgroundColor = self.thumbOffTintColor
-                        self.track.backgroundColor = self.trackOffTintColor
+                        self.switchThumb?.backgroundColor = self.thumbOffTintColor
+                        self.track?.backgroundColor = self.trackOffTintColor
                     }
-                    self.isEnabled = true
+                    super.isEnabled = true
                 }
                     
                 else {
-                    self.switchThumb.backgroundColor = self.thumbDisabledTintColor
-                    self.track.backgroundColor = self.trackDisabledTintColor
-                    self.isEnabled = false
+                    self.switchThumb?.backgroundColor = self.thumbDisabledTintColor
+                    self.track?.backgroundColor = self.trackDisabledTintColor
+                    super.isEnabled = false
                 }
-            }
+            })
             
         }
     }
@@ -106,22 +108,22 @@ public class EGMaterialSwitch: UIControl {
         isEnabled = true
         isRippleEnabled = true
         isBounceEnabled=true
-        rippleFillColor = UIColor.blueColor()
+        rippleFillColor = UIColor.blue
         bounceOffset = 3.0
-        var frame  = CGRectZero
-        var trackFrame = CGRectZero
-        var thumbFrame = CGRectZero
+        var frame  = CGRect.zero
+        var trackFrame = CGRect.zero
+        var thumbFrame = CGRect.zero
         
-        if(size == .Small){
-            frame = CGRectMake(0, 0, 30, 25)
+        if(size == .small){
+            frame = CGRect(x: 0, y: 0, width: 30, height: 25)
             trackThickness = 23.0
             thumbSize = 18.0
-        }else if(size == .Normal){
-            frame = CGRectMake(0, 0, 40, 30)
+        }else if(size == .normal){
+            frame = CGRect(x: 0, y: 0, width: 40, height: 30)
             trackThickness = 23.0
             thumbSize = 24.0
-        }else if(size == .Big){
-            frame = CGRectMake(0, 0, 50, 40)
+        }else if(size == .big){
+            frame = CGRect(x: 0, y: 0, width: 50, height: 40)
             trackThickness = 23.0
             thumbSize = 31.0
         }
@@ -138,45 +140,45 @@ public class EGMaterialSwitch: UIControl {
         self.frame = frame
         
         self.track = UIView.init(frame: trackFrame)
-        self.track.backgroundColor = UIColor.grayColor()
-        self.track.layer.cornerRadius = min(self.track.frame.size.height, self.track.frame.size.width)/2
-        self.addSubview(self.track)
+        self.track?.backgroundColor = UIColor.gray
+        self.track?.layer.cornerRadius = min((self.track?.frame.size.height)!, (self.track?.frame.size.width)!)/2
+        self.addSubview(self.track!)
         
         self.switchThumb = UIButton.init(frame: thumbFrame)
-        self.switchThumb.backgroundColor = UIColor.whiteColor()
-        self.switchThumb.layer.cornerRadius = self.switchThumb.frame.size.height/2
-        self.switchThumb.layer.shadowOpacity = 0.5
-        self.switchThumb.layer.shadowOffset = CGSizeMake(0.0, 1.0)
-        self.switchThumb.layer.shadowColor = UIColor.blackColor().CGColor
-        self.switchThumb.layer.shadowRadius = 2.0
+        self.switchThumb!.backgroundColor = UIColor.white
+        self.switchThumb!.layer.cornerRadius = (self.switchThumb?.frame.size.height)!/2
+        self.switchThumb!.layer.shadowOpacity = 0.5
+        self.switchThumb!.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        self.switchThumb!.layer.shadowColor = UIColor.black.cgColor
+        self.switchThumb!.layer.shadowRadius = 2.0
         
-        self.switchThumb.addTarget(self, action: Selector("onTouchDown:withEvent:"), forControlEvents: .TouchDown)
-        self.switchThumb.addTarget(self, action: Selector("onTouchUpOutsideOrCanceled:withEvent:"), forControlEvents: .TouchUpOutside)
-        self.switchThumb.addTarget(self, action: Selector("switchThumbTapped:"), forControlEvents: .TouchUpInside)
-        self.switchThumb.addTarget(self, action: Selector("onTouchDragInside:withEvent:"), forControlEvents: .TouchDragInside)
-        self.switchThumb.addTarget(self, action: Selector("onTouchUpOutsideOrCanceled:withEvent:"), forControlEvents: .TouchCancel)
-        self.addSubview(self.switchThumb)
-        
-        
-        thumbOnPosition = Float(self.frame.size.width - self.switchThumb.frame.size.width)
-        thumbOffPosition = Float(self.switchThumb.frame.origin.x)
+        self.switchThumb!.addTarget(self, action: #selector(EGMaterialSwitch.onTouchDown(_:withEvent:)), for: .touchDown)
+        self.switchThumb!.addTarget(self, action: #selector(EGMaterialSwitch.onTouchUpOutsideOrCanceled(_:withEvent:)), for: .touchUpOutside)
+        self.switchThumb!.addTarget(self, action: #selector(EGMaterialSwitch.switchThumbTapped(_:)), for: .touchUpInside)
+        self.switchThumb!.addTarget(self, action: #selector(EGMaterialSwitch.onTouchDragInside(_:withEvent:)), for: .touchDragInside)
+        self.switchThumb!.addTarget(self, action: #selector(EGMaterialSwitch.onTouchUpOutsideOrCanceled(_:withEvent:)), for: .touchCancel)
+        self.addSubview(self.switchThumb!)
         
         
-        if(state == .On){
+        thumbOnPosition = Float(self.frame.size.width - (self.switchThumb?.frame.size.width)!)
+        thumbOffPosition = Float((self.switchThumb?.frame.origin.x)!)
+        
+        
+        if(state == .on){
             self.isOn = true
-            self.switchThumb.backgroundColor = self.thumbOnTintColor
-            var thumbFrame = self.switchThumb.frame
-            thumbFrame.origin.x = CGFloat(thumbOnPosition)
-            self.switchThumb.frame = thumbFrame
-        }else if(state == .Off){
+            self.switchThumb?.backgroundColor = self.thumbOnTintColor
+            var thumbFrame = self.switchThumb?.frame
+            thumbFrame?.origin.x = CGFloat(thumbOnPosition)
+            self.switchThumb?.frame = thumbFrame!
+        }else if(state == .off){
             self.isOn = false
-            self.switchThumb.backgroundColor = self.thumbOffTintColor
+            self.switchThumb?.backgroundColor = self.thumbOffTintColor
         }else{
             self.isOn = false
-            self.switchThumb.backgroundColor = self.thumbOffTintColor
+            self.switchThumb?.backgroundColor = self.thumbOffTintColor
         }
         
-        let singleTap = UITapGestureRecognizer(target: self, action: Selector("switchAreaTapped:"))
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(EGMaterialSwitch.switchAreaTapped(_:)))
         self .addGestureRecognizer(singleTap)
     }
     public convenience init(size:EGMaterialSwitchSize,state:EGMaterialSwitchState,style:EGMaterialSwitchStyle){
@@ -184,23 +186,23 @@ public class EGMaterialSwitch: UIControl {
         
         thumbStyle = style;
         
-        if (style == .Light) {
+        if (style == .light) {
             self.thumbOnTintColor  = UIColor(red: 0/255, green: 134/255, blue: 117/255, alpha: 1.0)
             self.thumbOffTintColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
             self.trackOnTintColor = UIColor(red: 90/255, green: 178/255, blue: 169.255, alpha: 1.0)
             self.trackOffTintColor = UIColor(red: 129/255, green: 129/255, blue: 129/255, alpha: 1.0)
             self.thumbDisabledTintColor = UIColor(red: 175/255, green: 175/255, blue: 175/255, alpha: 1.0)
             self.trackDisabledTintColor = UIColor(red: 203/255, green: 203/255, blue: 203/255, alpha: 1.0)
-            self.rippleFillColor = UIColor.grayColor()
+            self.rippleFillColor = UIColor.gray
             
-        }else if (style == .Dark) {
+        }else if (style == .dark) {
             self.thumbOnTintColor  = UIColor(red: 109/255, green: 194/255, blue: 184/255, alpha: 1.0)
             self.thumbOffTintColor = UIColor(red: 175/255, green: 175/255, blue: 175/255, alpha: 1.0)
             self.trackOnTintColor = UIColor(red: 72/255, green: 109/255, blue: 105/255, alpha: 1.0)
             self.trackOffTintColor = UIColor(red: 94/255, green: 94/255, blue: 94/255, alpha: 1.0)
             self.thumbDisabledTintColor = UIColor(red: 50/255, green: 50/255, blue: 50/255, alpha: 1.0)
             self.trackDisabledTintColor = UIColor(red: 56/255, green: 56/255, blue: 56/255, alpha: 1.0)
-            self.rippleFillColor = UIColor.grayColor()
+            self.rippleFillColor = UIColor.gray
             
         }else{
             self.thumbOnTintColor  = UIColor(red: 52/255, green: 109/255, blue: 241/255, alpha: 1.0)
@@ -209,69 +211,69 @@ public class EGMaterialSwitch: UIControl {
             self.trackOffTintColor = UIColor(red: 193/255, green: 193/255, blue: 193/255, alpha: 1.0)
             self.thumbDisabledTintColor = UIColor(red: 174/255, green: 174/255, blue: 174/255, alpha: 1.0)
             self.trackDisabledTintColor = UIColor(red:203/255, green: 203/255, blue: 203/255, alpha: 1.0)
-            self.rippleFillColor = UIColor.grayColor()
+            self.rippleFillColor = UIColor.gray
         }
     }
     
     
     
     
- 
     
     
     
-    func setOnAnimated(on:Bool,animated:Bool){
+    
+    func setOnAnimated(_ on:Bool,animated:Bool){
         if (on == true) {
             if (animated == true) {
-                 self.changeThumbStateONwithAnimation()
+                self.changeThumbStateONwithAnimation()
             }
             else {
-                 self.changeThumbStateONwithoutAnimation()
+                self.changeThumbStateONwithoutAnimation()
             }
         }
         else {
             if (animated == true) {
-                 self.changeThumbStateOFFwithAnimation()
+                self.changeThumbStateOFFwithAnimation()
             }
             else {
-                 self.changeThumbStateOFFwithoutAnimation()
+                self.changeThumbStateOFFwithoutAnimation()
             }
         }
     }
     
     
-    func switchAreaTapped(recognizer:UITapGestureRecognizer){
+    func switchAreaTapped(_ recognizer:UITapGestureRecognizer){
         
         if let del = self.delegate {
             
             if (self.isOn == true) {
-                del.switchStateChanged(.Off)
+                del.switchStateChanged(.off)
             }
             else{
-                del.switchStateChanged(.On)
+                del.switchStateChanged(.on)
             }
         }
         
         self.changeThumbState()
     }
     
-  
-    public override func willMoveToSuperview(newSuperview: UIView?) {
+    
+    open override func willMove(toSuperview newSuperview: UIView?) {
         
-        super.willMoveToSuperview(newSuperview)
+        super.willMove(toSuperview: newSuperview)
         
-         if(self.isOn == true) {
-            self.switchThumb.backgroundColor = self.thumbOnTintColor
-            self.track.backgroundColor = self.trackOnTintColor
+        if(self.isOn == true) {
+            self.switchThumb?.backgroundColor = self.thumbOnTintColor
+            self.track?.backgroundColor = self.trackOnTintColor
         }
         else {
-            self.switchThumb.backgroundColor = self.thumbOffTintColor
-            self.track.backgroundColor = self.trackOffTintColor
+            self.switchThumb?.backgroundColor = self.thumbOffTintColor
+            self.track?.backgroundColor = self.trackOffTintColor
         }
         
         if (self.isEnabled == false) {
-            self.switchThumb.backgroundColor = self.thumbDisabledTintColor
-            self.track.backgroundColor = self.trackDisabledTintColor
+            self.switchThumb?.backgroundColor = self.thumbDisabledTintColor
+            self.track?.backgroundColor = self.trackDisabledTintColor
         }
         
         if (self.isBounceEnabled == true) {
@@ -300,139 +302,140 @@ extension EGMaterialSwitch {
         }
     }
     func changeThumbStateONwithAnimation(){
-       
-        UIView .animateWithDuration(
-            0.15, delay: 0.05, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+        
+        UIView .animate(
+            withDuration: 0.15, delay: 0.05, options: UIViewAnimationOptions(), animations: { () -> Void in
                 
-                var thumbFrame = self.switchThumb.frame
-                thumbFrame.origin.x = CGFloat(self.thumbOnPosition + self.bounceOffset)
-                self.switchThumb.frame = thumbFrame
+                var thumbFrame = self.switchThumb?.frame
+                thumbFrame?.origin.x = CGFloat(self.thumbOnPosition + self.bounceOffset)
+                self.switchThumb?.frame = thumbFrame!
                 if (self.isEnabled == true) {
-                    self.switchThumb.backgroundColor = self.thumbOnTintColor
-                    self.track.backgroundColor = self.trackOnTintColor
+                    self.switchThumb?.backgroundColor = self.thumbOnTintColor
+                    self.track?.backgroundColor = self.trackOnTintColor
                 }
                 else {
-                    self.switchThumb.backgroundColor = self.thumbDisabledTintColor
-                    self.track.backgroundColor = self.trackDisabledTintColor
+                    self.switchThumb?.backgroundColor = self.thumbDisabledTintColor
+                    self.track?.backgroundColor = self.trackDisabledTintColor
                 }
-                self.userInteractionEnabled = false;
+                self.isUserInteractionEnabled = false;
                 
-            }) { (Bool finished) -> Void in
-                 if (self.isOn == false) {
-                    self.isOn = true;
-                     self.sendActionsForControlEvents(.ValueChanged)
-                }
+        }) { (finished) -> Void in
+            if (self.isOn == false) {
                 self.isOn = true;
+                self.sendActions(for: .valueChanged)
+            }
+            self.isOn = true;
+            
+            UIView.animate(withDuration: 0.15, animations: { () -> Void in
+                var thumbFrame = self.switchThumb?.frame
+                thumbFrame?.origin.x = CGFloat(self.thumbOnPosition)
+                self.switchThumb?.frame = thumbFrame!
                 
-                UIView.animateWithDuration(0.15, animations: { () -> Void in
-                    var thumbFrame = self.switchThumb.frame
-                    thumbFrame.origin.x = CGFloat(self.thumbOnPosition)
-                    self.switchThumb.frame = thumbFrame
-                    
-                    }, completion: { (Bool fi) -> Void in
-                        self.userInteractionEnabled = true
-
-                })
-
+            }, completion: { (fi) -> Void in
+                self.isUserInteractionEnabled = true
+                
+            })
+            
         }
     }
     
     func changeThumbStateOFFwithAnimation(){
-        UIView .animateWithDuration(
-            0.15, delay: 0.05, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+        UIView .animate(
+            withDuration: 0.15, delay: 0.05, options: UIViewAnimationOptions(), animations: { () -> Void in
                 
-                var thumbFrame = self.switchThumb.frame
-                thumbFrame.origin.x = CGFloat(self.thumbOffPosition-self.bounceOffset)
-                self.switchThumb.frame = thumbFrame
+                var thumbFrame = self.switchThumb?.frame
+                thumbFrame?.origin.x = CGFloat(self.thumbOffPosition-self.bounceOffset)
+                self.switchThumb?.frame = thumbFrame!
                 if (self.isEnabled == true) {
-                    self.switchThumb.backgroundColor = self.thumbOffTintColor
-                    self.track.backgroundColor = self.trackOffTintColor
+                    self.switchThumb?.backgroundColor = self.thumbOffTintColor
+                    self.track?.backgroundColor = self.trackOffTintColor
                 }
                 else {
-                    self.switchThumb.backgroundColor = self.thumbDisabledTintColor
-                    self.track.backgroundColor = self.trackDisabledTintColor
+                    self.switchThumb?.backgroundColor = self.thumbDisabledTintColor
+                    self.track?.backgroundColor = self.trackDisabledTintColor
                 }
-                self.userInteractionEnabled = false
+                self.isUserInteractionEnabled = false
                 
                 
-            }) { (Bool finished) -> Void in
-                 if (self.isOn == true) {
-                    self.isOn = false
-                     self.sendActionsForControlEvents(.ValueChanged)
-                }
-                self.isOn = false;
-                
-                UIView.animateWithDuration(0.15, animations: { () -> Void in
-                     var thumbFrame = self.switchThumb.frame
-                    thumbFrame.origin.x = CGFloat(self.thumbOffPosition)
-                    self.switchThumb.frame = thumbFrame
-                    }, completion: { (Bool fi) -> Void in
-                        self.userInteractionEnabled = true;
-                })
-                
+        }) { (finished) -> Void in
+            if (self.isOn == true) {
+                self.isOn = false
+                self.sendActions(for: .valueChanged)
+            }
+            self.isOn = false;
+            
+            UIView.animate(withDuration: 0.15, animations: { () -> Void in
+                var thumbFrame = self.switchThumb?.frame
+                thumbFrame?.origin.x = CGFloat(self.thumbOffPosition)
+                self.switchThumb?.frame = thumbFrame!
+            }, completion: { (fi) -> Void in
+                self.isUserInteractionEnabled = true;
+            })
+            
         }
     }
     
     func changeThumbStateONwithoutAnimation(){
-        var thumbFrame = self.switchThumb.frame
-        thumbFrame.origin.x = CGFloat(self.thumbOnPosition)
-        self.switchThumb.frame = thumbFrame
+        var thumbFrame = self.switchThumb?.frame
+        thumbFrame?.origin.x = CGFloat(self.thumbOnPosition)
+        self.switchThumb?.frame = thumbFrame!
         if (self.isEnabled == true) {
-            self.switchThumb.backgroundColor = self.thumbOnTintColor
-            self.track.backgroundColor = self.trackOnTintColor
+            self.switchThumb?.backgroundColor = self.thumbOnTintColor
+            self.track?.backgroundColor = self.trackOnTintColor
         }
         else {
-            self.switchThumb.backgroundColor = self.thumbDisabledTintColor
-            self.track.backgroundColor = self.trackDisabledTintColor
+            self.switchThumb?.backgroundColor = self.thumbDisabledTintColor
+            self.track?.backgroundColor = self.trackDisabledTintColor
         }
         
         if (self.isOn == false) {
             self.isOn = true;
-             self.sendActionsForControlEvents(.ValueChanged)
+            self.sendActions(for: .valueChanged)
         }
         self.isOn = true
     }
     
     func changeThumbStateOFFwithoutAnimation(){
-        var thumbFrame = self.switchThumb.frame
-        thumbFrame.origin.x = CGFloat(self.thumbOffPosition)
-        self.switchThumb.frame = thumbFrame
+        var thumbFrame = self.switchThumb?.frame
+        thumbFrame?.origin.x = CGFloat(self.thumbOffPosition)
+        self.switchThumb?.frame = thumbFrame!
         if (self.isEnabled == true) {
-            self.switchThumb.backgroundColor = self.thumbOffTintColor
-            self.track.backgroundColor = self.trackOffTintColor
+            self.switchThumb?.backgroundColor = self.thumbOffTintColor
+            self.track?.backgroundColor = self.trackOffTintColor
         }
         else {
-            self.switchThumb.backgroundColor = self.thumbDisabledTintColor
-            self.track.backgroundColor = self.trackDisabledTintColor
+            self.switchThumb?.backgroundColor = self.thumbDisabledTintColor
+            self.track?.backgroundColor = self.trackDisabledTintColor
         }
         
         if (self.isOn == true) {
             self.isOn = false;
-            self.sendActionsForControlEvents(.ValueChanged)
-         }
+            self.sendActions(for: .valueChanged)
+        }
         self.isOn = false
     }
     
     func initializeRipple(){
         
         let rippleScale = 2
-        var rippleFrame = CGRectZero
-        rippleFrame.origin.x = -self.switchThumb.frame.size.width/CGFloat(rippleScale * 2)
-        rippleFrame.origin.y = -self.switchThumb.frame.size.height/CGFloat(rippleScale * 2)
-        rippleFrame.size.height = self.switchThumb.frame.size.height * CGFloat(rippleScale)
+        var rippleFrame = CGRect.zero
+        rippleFrame.origin.x = -(self.switchThumb!.frame.size.width) / CGFloat(rippleScale * 2)
+        rippleFrame.origin.y = -(self.switchThumb!.frame.size.height) / CGFloat(rippleScale * 2)
+        rippleFrame.size.height = (self.switchThumb!.frame.size.height) * CGFloat(rippleScale)
+        
         rippleFrame.size.width = rippleFrame.size.height
         
         
-        let path = UIBezierPath(roundedRect: rippleFrame, cornerRadius: self.switchThumb.layer.cornerRadius*2)
+        let path = UIBezierPath(roundedRect: rippleFrame, cornerRadius: (self.switchThumb?.layer.cornerRadius)!*2)
         
         rippleLayer = CAShapeLayer()
-        rippleLayer.path = path.CGPath
+        rippleLayer.path = path.cgPath
         rippleLayer.frame = rippleFrame
         rippleLayer.opacity = 0.2
-        rippleLayer.strokeColor = UIColor.clearColor().CGColor
-        rippleLayer.fillColor = self.rippleFillColor.CGColor
+        rippleLayer.strokeColor = UIColor.clear.cgColor
+        rippleLayer.fillColor = self.rippleFillColor?.cgColor
         rippleLayer.lineWidth = 0
-        self.switchThumb.layer .insertSublayer(rippleLayer, above: self.switchThumb.layer)
+        self.switchThumb?.layer .insertSublayer(rippleLayer, above: self.switchThumb?.layer)
     }
     
     func animateRippleEffect(){
@@ -462,12 +465,13 @@ extension EGMaterialSwitch {
         animation.animations = [scaleAnimation, alphaAnimation]
         animation.duration = 0.4;
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        rippleLayer.addAnimation(animation, forKey: nil)
+        rippleLayer.add(animation, forKey: nil)
         
         CATransaction.commit()
     }
-    func onTouchDown(btn:UIButton, withEvent:UIEvent){
-       
+    
+    func onTouchDown(_ btn:UIButton, withEvent:UIEvent){
+        
         if (self.isRippleEnabled == true) {
             self.initializeRipple()
         }
@@ -486,33 +490,35 @@ extension EGMaterialSwitch {
         animation.animations = [scaleAnimation, alphaAnimation]
         animation.duration = 0.4
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        rippleLayer.addAnimation(animation, forKey: nil)
+        rippleLayer.add(animation, forKey: nil)
         
         CATransaction.commit()
     }
-    func switchThumbTapped(sender:AnyObject){
+    
+    func switchThumbTapped(_ sender:AnyObject){
         
         if  let del = self.delegate {
             if(self.isOn == true){
                 
-                del.switchStateChanged(.Off)
+                del.switchStateChanged(.off)
             }else{
-                del.switchStateChanged(.On)
+                del.switchStateChanged(.on)
             }
         }
         self.changeThumbState()
     }
-    func onTouchUpOutsideOrCanceled(btn:UIButton,withEvent event:UIEvent){
+    
+    func onTouchUpOutsideOrCanceled(_ btn:UIButton,withEvent event:UIEvent){
         
         
-        let touch = event.touchesForView(btn)?.first
-        let prevPos = touch?.previousLocationInView(btn)
-        let pos = touch?.locationInView(btn)
+        let touch = event.touches(for: btn)?.first
+        let prevPos = touch?.previousLocation(in: btn)
+        let pos = touch?.location(in: btn)
         
         let dX = (pos?.x)! - (prevPos?.x)!
         let newXOrigin = btn.frame.origin.x + dX
         
-        if newXOrigin > (self.frame.size.width - self.switchThumb.frame.size.width)/2 {
+        if newXOrigin > (self.frame.size.width - (self.switchThumb?.frame.size.width)!)/2 {
             self.changeThumbStateONwithAnimation()
         }else {
             self.changeThumbStateOFFwithAnimation()
@@ -522,11 +528,12 @@ extension EGMaterialSwitch {
             self.animateRippleEffect()
         }
     }
-    func onTouchDragInside(btn: UIButton, withEvent event: UIEvent){
+    
+    func onTouchDragInside(_ btn: UIButton, withEvent event: UIEvent){
         
-        let touch = event.touchesForView(btn)?.first
-        let prevPos = touch?.previousLocationInView(btn)
-        let pos = touch?.locationInView(btn)
+        let touch = event.touches(for: btn)?.first
+        let prevPos = touch?.previousLocation(in: btn)
+        let pos = touch?.location(in: btn)
         let dX = (pos?.x)! - (prevPos?.x)!
         
         var thumbFrame = btn.frame
@@ -534,10 +541,10 @@ extension EGMaterialSwitch {
         thumbFrame.origin.x += dX
         thumbFrame.origin.x = min(thumbFrame.origin.x, CGFloat(thumbOnPosition))
         thumbFrame.origin.x = max(thumbFrame.origin.x, CGFloat(thumbOffPosition))
-    
+        
         if thumbFrame.origin.x != btn.frame.origin.x {
             btn.frame = thumbFrame
         }
     }
 }
-    
+
